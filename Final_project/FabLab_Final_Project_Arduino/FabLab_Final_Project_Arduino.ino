@@ -58,7 +58,7 @@ void setup() {
   ring.setBrightness(15);
 
   servo_goal.attach(PIN_SERVO);
-  servo_goal.write(90);
+  servo_goal.write(30);
 
   lcd.init();
   lcd.backlight();
@@ -73,7 +73,7 @@ void setup() {
   ring_test();
   // servo_test();
   // lcd_test();
-  Serial.begin(9600);
+  // Serial.begin(9600);
 
   // LOSUNG FESTLEGEN UND test BEREIT STELLEN
   randomSeed(analogRead(0));
@@ -266,7 +266,7 @@ void pruefeLoesung() {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("RICHTIG");
-    servo_goal.write(0);
+    servo_goal.write(30);
     ring.clear();
     ring.fill(farbeWeiss, 0);
     ring.show();
