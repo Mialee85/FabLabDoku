@@ -1,13 +1,14 @@
 /*
-BOARD: ARDUINO UNO
+BOARD: ATTiny 1614
 VERSION: 2
 PINS:
-  Taster: D10 - Blau, D11 - Gruen, D12 - Gelb, D13 - Rot
-  NeoPixel: D6
-  Servo: D7
+  Taster: D2 - Gelb, D3 - Gruen, D4 - Rot, D5 - Blau
+  NeoPixel: D12
+  Servo: D11
+  Random: D13
 
-  SCL: A0
-  SDA: A1
+  SCL: 9
+  SDA: 8
 */
 
 // LIBARIES
@@ -15,8 +16,11 @@ PINS:
 #include <Adafruit_NeoPixel.h>
 #include <LiquidCrystal_I2C.h>
 
+// DEFINE RANDOM PIN
+#define PIN_RANDOM 13
+
 // DEFINE PIXELRING
-#define PIN_RING 6
+#define PIN_RING 12
 #define NUMPIXELS 12
 Adafruit_NeoPixel ring(NUMPIXELS, PIN_RING, NEO_GRB + NEO_KHZ800);
 
@@ -28,17 +32,17 @@ uint32_t farbeBlau = ring.Color(0, 0, 255);
 uint32_t farbeWeiss = ring.Color(255, 255, 255);
 
 // DEFINE SERVO
-#define PIN_SERVO 7
+#define PIN_SERVO 11
 Servo servo_goal;
 
 // DEFINE LCD
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 // DEFINE BUTTONS
-#define PIN_BLAU 10
-#define PIN_GRUEN 11
-#define PIN_GELB 12
-#define PIN_ROT 13
+#define PIN_BLAU 5
+#define PIN_GRUEN 3
+#define PIN_GELB 2
+#define PIN_ROT 4
 
 // GLOBALE VARIABLEN
 int loesung[7];
@@ -58,7 +62,7 @@ void setup() {
   ring.setBrightness(15);
 
   servo_goal.attach(PIN_SERVO);
-  servo_goal.write(30);
+  servo_goal.write(90);
 
   lcd.init();
   lcd.backlight();
@@ -76,7 +80,7 @@ void setup() {
   // Serial.begin(9600);
 
   // LOSUNG FESTLEGEN UND test BEREIT STELLEN
-  randomSeed(analogRead(0));
+  randomSeed(analogRead(PIN_RANDOM));
   for (int i = 0; i < 6; i++) {
     loesung[i] = random(1, 13);
     test[i] = loesung[i];
@@ -266,7 +270,7 @@ void pruefeLoesung() {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("RICHTIG");
-    servo_goal.write(30);
+    servo_goal.write(0);
     ring.clear();
     ring.fill(farbeWeiss, 0);
     ring.show();
