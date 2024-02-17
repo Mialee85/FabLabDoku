@@ -9,6 +9,22 @@ PINS:
 
   SCL: 9
   SDA: 8
+
+!!! PINS AUF BOARD UND ARDUINO ANSPRACHE SIND VERSCHIEDEN !!!
+PINS BOARD - PINS ARDUINO
+2 - 0
+3 - 1
+4 - 2
+5 - 3
+6 - 4
+7 - 5
+8 - 6
+9 - 7
+10 - 11
+11 - 8
+12 - 9
+13 - 10
+  
 */
 
 // LIBARIES
@@ -17,10 +33,10 @@ PINS:
 #include <LiquidCrystal_I2C.h>
 
 // DEFINE RANDOM PIN
-#define PIN_RANDOM 13
+#define PIN_RANDOM 10
 
 // DEFINE PIXELRING
-#define PIN_RING 12
+#define PIN_RING 9
 #define NUMPIXELS 12
 Adafruit_NeoPixel ring(NUMPIXELS, PIN_RING, NEO_GRB + NEO_KHZ800);
 
@@ -32,17 +48,17 @@ uint32_t farbeBlau = ring.Color(0, 0, 255);
 uint32_t farbeWeiss = ring.Color(255, 255, 255);
 
 // DEFINE SERVO
-#define PIN_SERVO 11
+#define PIN_SERVO 8
 Servo servo_goal;
 
 // DEFINE LCD
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 // DEFINE BUTTONS
-#define PIN_BLAU 5
-#define PIN_GRUEN 3
-#define PIN_GELB 2
-#define PIN_ROT 4
+#define PIN_BLAU 3
+#define PIN_GRUEN 1
+#define PIN_GELB 0
+#define PIN_ROT 2
 
 // GLOBALE VARIABLEN
 int loesung[7];
@@ -109,7 +125,7 @@ void loop() {
     ringNext();
   }
 
-  if (millis() - millisTaster > 1000) {
+  if (millis() - millisTaster > 750) {
     if (digitalRead(PIN_BLAU)) {
       taster(0);
     }
@@ -140,7 +156,7 @@ void loop() {
 void ringNext() {
   ring.clear();
   ring.show();
-  delay(100);
+  delay(200);
 
   switch (loesung[counterRing]) {
     case 1:
@@ -206,41 +222,27 @@ void taster(int value) {
     row = 1;
     pos = pos - 15;
   }
-  /* Debugging
-  Serial.print("Row: ");
-  Serial.print(row);
-  Serial.print(" Position: ");
-  Serial.println(pos);
-  */
-
+  
   eingabe[counterEingabe] = value + 1;
   lcd.setCursor(pos, row);
 
   switch (value) {
     case 0:
       lcd.print("BLAU");
-      // Debug
-      // Serial.println("Blau");
       break;
 
     case 1:
       lcd.print("GR");
       lcd.write(245);
       lcd.print("N");
-      // Debug
-      // Serial.println("Grün");
       break;
 
     case 2:
       lcd.print("GELB");
-      // Debug
-      // Serial.println("Gelb");
       break;
 
     case 3:
       lcd.print("ROT");
-      // Debug
-      // Serial.println("Rot");
       break;
 
     default:
@@ -269,7 +271,7 @@ void pruefeLoesung() {
   if (richtig) {
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("RICHTIG");
+    lcd.print("    RICHTIG");
     servo_goal.write(0);
     ring.clear();
     ring.fill(farbeWeiss, 0);
@@ -286,49 +288,25 @@ void pruefeLoesung() {
     ring.clear();
     ring.show();
     for(;;){
-
-    }
+      }
   } else {
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("FALSCH");
+    lcd.print("    FALSCH");
     ring.clear();
     ring.show();
     counterEingabe = 0;
     counterRing = 0;
-    delay(3000);
+    delay(1000);
+    ring_test();
+    delay(1000);
     lcd.clear();
   }
   // wenn falsch -> Lösche Display, reset counter
-
-  //!!! DUMMY !!!
-  /*
-    lcd.clear();
-  counterEingabe = 0;
-  Serial.println("Lösung:");
-  for (int i = 0; i < 6; i++) {
-    Serial.print(loesung[i]);
-    Serial.print(" ");
-  }
-  Serial.println("");
-  Serial.println("Test:");
-  for (int i = 0; i < 6; i++) {
-    Serial.print(test[i]);
-    Serial.print(" ");
-  }
-  Serial.println("");
-  Serial.println("Eingabe:");
-  for (int i = 0; i < 6; i++) {
-    Serial.print(eingabe[i]);
-    Serial.print(" ");
-  }
-  */
 }
 
 
-
 // UNIT TESTS
-
 void ring_test() {
   ring.clear();
   ring.show();
