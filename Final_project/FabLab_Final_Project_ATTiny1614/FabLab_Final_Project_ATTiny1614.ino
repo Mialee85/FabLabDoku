@@ -28,6 +28,7 @@ PINS BOARD - PINS ARDUINO
 */
 
 // LIBARIES
+#include <Wire.h>
 #include <Servo.h>
 #include <Adafruit_NeoPixel.h>
 #include <LiquidCrystal_I2C.h>
